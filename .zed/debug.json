@@ -1,0 +1,42 @@
+// Project-local debug tasks
+//
+// For more documentation on how to configure debug tasks,
+// see: https://zed.dev/docs/debugger
+[
+  {
+    "adapter": "Debugpy",
+    "label": "pytest '…esearch/main.py'",
+    "request": "launch",
+    "python": "$ZED_CUSTOM_PYTHON_ACTIVE_ZED_TOOLCHAIN",
+    "args": ["\"$ZED_FILE\""],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "module": "pytest",
+  },
+  {
+    "adapter": "Debugpy",
+    "label": "Debug main.py with args",
+    "request": "launch",
+    "python": "$ZED_CUSTOM_PYTHON_ACTIVE_ZED_TOOLCHAIN",
+    "args": [
+      "--dataset",
+      "seq-cifar10",
+      "--model",
+      "ewc-on",
+      "--model_config",
+      "best",
+      "--poison_task",
+      "0",
+      "--pcp",
+      "0.5",
+      "--pp",
+      "0.5",
+      "--corruptions",
+      "gaussian_noise", 
+      "shot_noise",
+      "--severity",
+      "1"
+    ],
+    "cwd": "$ZED_WORKTREE_ROOT",
+    "program": "$ZED_WORKTREE_ROOT/main.py",
+  }
+]

@@ -217,6 +217,7 @@ def parse_args(
         add_initial_args,
         add_management_args,
         add_experiment_args,
+        add_poison_args,
         add_configuration_args,
         clean_dynamic_args,
         check_multiple_defined_arg_during_string_parse,
@@ -300,6 +301,7 @@ def parse_args(
     # - add the main Mammoth arguments
     add_management_args(parser)
     add_experiment_args(parser)
+    add_poison_args(parser)
 
     # - merge and set the defaults for the arguments
     args = merge_namespace(args, ckpt_args)
