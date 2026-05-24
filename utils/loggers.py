@@ -239,7 +239,7 @@ class Logger:
 
         if "seed" in args.keys():
             wrargs["seed"] = args["seed"]
-            experiment_string = smart_joint(str(wrargs["seed"]))
+            experiment_string = str(wrargs["seed"])
         else:
             experiment_string = ""
 
@@ -249,16 +249,20 @@ class Logger:
             wrargs["pp"] = args["pp"]
             wrargs["corruptions"] = args["corruptions"]
             wrargs["severity"] = args["severity"]
-            experiment_string = smart_joint(
-                experiment_string,
-                wrargs["corruptions"].join("_"),
-                "severity_" + str(wrargs["severity"]),
-                "pp_" + str(wrargs["pp"]),
-                "pcp_" + str(wrargs["pcp"]),
-                "poison_task_" + str(wrargs["poison_task"]),
+            experiment_string = (
+                experiment_string
+                + "_".join(wrargs["corruptions"])
+                + "severity_"
+                + str(wrargs["severity"])
+                + "pp_"
+                + str(wrargs["pp"])
+                + "pcp_"
+                + str(wrargs["pcp"])
+                + "poison_task_"
+                + "_".join(wrargs["poison_task"])
             )
         else:
-            experiment_string = smart_joint(experiment_string, "")
+            experiment_string = experiment_string + ""
 
         target_folder = smart_joint(base_path(), self.args.results_path)
 
@@ -273,11 +277,11 @@ class Logger:
             self.setting,
             self.dataset,
             self.model,
-            experiment_string,
-            "logs.pyd",
+            experiment_string + "logs.pyd",
         )
-        logging.info("Logging results and arguments in " + path)
+        (logging.info("Logging results and arguments in " + path),)
         with open(path, "a") as f:
+            wrargs["device"] = str(wrargs["device"])
             f.write(str(wrargs) + "\n")
 
         if self.setting == "class-il":
@@ -302,8 +306,7 @@ class Logger:
                 "task-il",
                 self.dataset,
                 self.model,
-                experiment_string,
-                "logs.pyd",
+                experiment_string + "logs.pyd",
             )
             with open(path, "a") as f:
                 f.write(str(wrargs) + "\n")
@@ -313,8 +316,7 @@ class Logger:
             "task-il",
             self.dataset,
             self.model,
-            experiment_string,
-            "logs.json",
+            experiment_string + "logs.json",
         )
         with open(json_path, "a") as f:
             json.dump(wrargs, f)
