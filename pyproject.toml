@@ -24,6 +24,7 @@ dependencies = [
     "bitsandbytes>=0.45.4",
     "clip",
     "datasets>=4.5.0",
+    "debugpy>=1.8.20",
     "dotenv>=0.9.9",
     "ftfy>=6.3.1",
     "googledrivedownloader==0.4",

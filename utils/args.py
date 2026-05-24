@@ -18,9 +18,7 @@ from backbone import REGISTERED_BACKBONES
 from datasets import get_dataset_config_names, get_dataset_names
 from models import get_model_names
 from models.utils.continual_model import ContinualModel
-from datasets.utils.image_corputions import corruption_dict
 from utils import binary_to_boolean_type, custom_str_underscore, field_with_aliases
-import json
 
 
 def get_single_arg_value(
@@ -265,7 +263,7 @@ def add_configuration_args(parser: ArgumentParser, args: Namespace) -> None:
     config_group.add_argument(
         "--model_config",
         type=field_with_aliases({"default": ["base", "default"], "best": ["best"]}),
-        default="default",
+        default="best",
         help="The configuration used for this model. The available configurations are defined in the `models/config/<model>.yaml` file "
         "and include a `default` (dataset-agostic) configuration and a `best` configuration (dataset-specific). "
         "If not provided, the `default` configuration is used.",
@@ -279,7 +277,7 @@ def add_initial_args(parser, strict=True) -> ArgumentParser:
     parser.add_argument(
         "--dataset",
         type=custom_str_underscore,
-        required=strict,
+        # required=strict,
         choices=get_dataset_names(names_only=True),
         help="Which dataset to perform experiments on.",
         default="seq-cifar10",
@@ -287,7 +285,7 @@ def add_initial_args(parser, strict=True) -> ArgumentParser:
     parser.add_argument(
         "--model",
         type=custom_str_underscore,
-        required=strict,
+        # required=strict,
         help="Model name.",
         choices=list(get_model_names().keys()),
         default="ewc-on",
@@ -531,6 +529,7 @@ def add_experiment_args(parser: ArgumentParser) -> None:
         help="Path where to save the noisy labels cache. The path is relative to the `base_path`.",
     )
 
+
 def add_poison_args(parser: ArgumentParser) -> None:
     """
     Adds the poison arguments.
@@ -545,7 +544,7 @@ def add_poison_args(parser: ArgumentParser) -> None:
         "Poison arguments",
         "Arguments related to the poison attack.",
     )
-    
+
     poison_group.add_argument(
         "--poison_task",
         type=int,
@@ -553,7 +552,7 @@ def add_poison_args(parser: ArgumentParser) -> None:
         default=[],
         help="The tasks to poison. If not provided, none will be poisoned.",
     )
-    
+
     poison_group.add_argument(
         "--pcp",
         type=float,
@@ -567,22 +566,23 @@ def add_poison_args(parser: ArgumentParser) -> None:
         default=None,
         help="The percentage of poisoned samples in a task, if not provided will poison half the classes.",
     )
-    
+
     poison_group.add_argument(
         "--corruptions",
         nargs="+",
         default=[],
-        type = str,
+        type=str,
         help="The list of corruptions to apply to the poisoned samples, if not provided will apply no corruptions.",
         # choices=corruption_dict.keys(),
     )
-    
+
     poison_group.add_argument(
         "--severity",
         type=int,
         default=1,
         help="The severity of the corruptions to apply to the poisoned samples, if not provided will use severity 1.",
     )
+
 
 def add_management_args(parser: ArgumentParser) -> None:
     """
@@ -605,6 +605,14 @@ def add_management_args(parser: ArgumentParser) -> None:
         default=None,
         help="The random seed. If not provided, a random seed will be used.",
     )
+
+    mng_group.add_argument(
+        "--runs",
+        type=int,
+        default=1,
+        help="the number of time to run the model on different seeds",
+    )
+
     mng_group.add_argument(
         "--permute_classes",
         type=binary_to_boolean_type,

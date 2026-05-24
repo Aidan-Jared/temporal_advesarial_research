@@ -366,6 +366,14 @@ def parse_args(
         from utils.conf import set_random_seed
 
         set_random_seed(args.seed)
+        if args.runs > 1:
+            import numpy.random as random
+            rng = random.default_rng()
+            args.seeds = rng.integers(0, 5000, args.runs)
+        else:
+            args.seeds = None
+    else:
+        args.seeds = None
 
     # Add uuid, timestamp and hostname for logging
     args.conf_jobnum = str(uuid.uuid4())
@@ -469,8 +477,8 @@ def initialize(
     from backbone import get_backbone
 
     lecun_fix()
-    if args is None:
-        args = parse_args(verbose=True)
+    # if args is None:
+    #     args = parse_args(verbose=True)
 
     device = get_device(avail_devices=args.device)
     args.device = device
@@ -558,11 +566,23 @@ def main(args=None):
     It loads the model and dataset, checks the arguments, and starts the training process.
     """
     from utils.training import train
+    from utils.conf import set_random_seed
+    # if args is None:
+    args = parse_args(verbose=True)
 
-    model, dataset, args = initialize(args)
+    if args.seeds is not None:
 
-    train(model, dataset, args)
+        for seed in args.seeds:
+            set_random_seed(seed)
+            args.seed = seed
+            model, dataset, args = initialize(args)
 
+            train(model, dataset, args)
+
+    else:
+        model, dataset, args = initialize(args)
+
+        train(model, dataset, args)
 
 if __name__ == '__main__':
     main()

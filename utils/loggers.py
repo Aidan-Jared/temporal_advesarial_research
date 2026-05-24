@@ -7,25 +7,27 @@
 This module contains the Logger class and related functions for logging accuracy values and other metrics.
 """
 
+import json
+import logging
+import sys
 from argparse import Namespace
 from contextlib import suppress
-import logging
-import os
-import sys
 from typing import Any, Dict, Union
 
 import numpy as np
 
 from utils import create_if_not_exists, smart_joint
 from utils.conf import base_path
-from utils.metrics import backward_transfer, forward_transfer, forgetting
+from utils.metrics import backward_transfer, forgetting, forward_transfer
+
 with suppress(ImportError):
     import wandb
 
 
 class Logger:
-    def __init__(self, args, setting_str: str, dataset_str: str,
-                 model_str: str) -> None:
+    def __init__(
+        self, args, setting_str: str, dataset_str: str, model_str: str
+    ) -> None:
         """
         Initializes a Logger object. This will take track and log the accuracy values and other metrics in the default path (`data/results`).
         The default path can be changed with the `--results_path` argument.
@@ -39,7 +41,7 @@ class Logger:
         self.args = args
         self.accs = []
         self.fullaccs = []
-        if setting_str == 'class-il':
+        if setting_str == "class-il":
             self.accs_mask_classes = []
             self.fullaccs_mask_classes = []
         self.setting = setting_str
@@ -62,18 +64,18 @@ class Logger:
             A dictionary containing the logged values.
         """
         dic = {
-            'accs': self.accs,
-            'fullaccs': self.fullaccs,
-            'fwt': self.fwt,
-            'bwt': self.bwt,
-            'forgetting': self.forgetting,
-            'fwt_mask_classes': self.fwt_mask_classes,
-            'bwt_mask_classes': self.bwt_mask_classes,
-            'forgetting_mask_classes': self.forgetting_mask_classes,
+            "accs": self.accs,
+            "fullaccs": self.fullaccs,
+            "fwt": self.fwt,
+            "bwt": self.bwt,
+            "forgetting": self.forgetting,
+            "fwt_mask_classes": self.fwt_mask_classes,
+            "bwt_mask_classes": self.bwt_mask_classes,
+            "forgetting_mask_classes": self.forgetting_mask_classes,
         }
-        if self.setting == 'class-il':
-            dic['accs_mask_classes'] = self.accs_mask_classes
-            dic['fullaccs_mask_classes'] = self.fullaccs_mask_classes
+        if self.setting == "class-il":
+            dic["accs_mask_classes"] = self.accs_mask_classes
+            dic["fullaccs_mask_classes"] = self.fullaccs_mask_classes
 
         return dic
 
@@ -84,17 +86,17 @@ class Logger:
         Args:
             dic: The dictionary containing the logged values.
         """
-        self.accs = dic['accs']
-        self.fullaccs = dic['fullaccs']
-        self.fwt = dic['fwt']
-        self.bwt = dic['bwt']
-        self.forgetting = dic['forgetting']
-        self.fwt_mask_classes = dic['fwt_mask_classes']
-        self.bwt_mask_classes = dic['bwt_mask_classes']
-        self.forgetting_mask_classes = dic['forgetting_mask_classes']
-        if self.setting == 'class-il':
-            self.accs_mask_classes = dic['accs_mask_classes']
-            self.fullaccs_mask_classes = dic['fullaccs_mask_classes']
+        self.accs = dic["accs"]
+        self.fullaccs = dic["fullaccs"]
+        self.fwt = dic["fwt"]
+        self.bwt = dic["bwt"]
+        self.forgetting = dic["forgetting"]
+        self.fwt_mask_classes = dic["fwt_mask_classes"]
+        self.bwt_mask_classes = dic["bwt_mask_classes"]
+        self.forgetting_mask_classes = dic["forgetting_mask_classes"]
+        if self.setting == "class-il":
+            self.accs_mask_classes = dic["accs_mask_classes"]
+            self.fullaccs_mask_classes = dic["fullaccs_mask_classes"]
 
     def rewind(self, num):
         """
@@ -113,7 +115,7 @@ class Logger:
             self.bwt_mask_classes = self.bwt_mask_classes[:-num]
             self.forgetting_mask_classes = self.forgetting_mask_classes[:-num]
 
-        if self.setting == 'class-il':
+        if self.setting == "class-il":
             self.accs_mask_classes = self.accs_mask_classes[:-num]
             self.fullaccs_mask_classes = self.fullaccs_mask_classes[:-num]
 
@@ -128,8 +130,10 @@ class Logger:
             accs_mask_classes: The accuracy values for masked classes.
         """
         self.fwt = forward_transfer(results, accs)
-        if self.setting == 'class-il':
-            self.fwt_mask_classes = forward_transfer(results_mask_classes, accs_mask_classes)
+        if self.setting == "class-il":
+            self.fwt_mask_classes = forward_transfer(
+                results_mask_classes, accs_mask_classes
+            )
 
         return self.fwt, self.fwt_mask_classes
 
@@ -142,7 +146,7 @@ class Logger:
             results_mask_classes: The results for masked classes.
         """
         self.bwt = backward_transfer(results)
-        if self.setting == 'class-il':
+        if self.setting == "class-il":
             self.bwt_mask_classes = backward_transfer(results_mask_classes)
 
         return self.bwt, self.bwt_mask_classes
@@ -156,7 +160,7 @@ class Logger:
             results_mask_classes: The results for masked classes.
         """
         self.forgetting = forgetting(results)
-        if self.setting == 'class-il':
+        if self.setting == "class-il":
             self.forgetting_mask_classes = forgetting(results_mask_classes)
 
         return self.forgetting, self.forgetting_mask_classes
@@ -168,7 +172,7 @@ class Logger:
         Args:
             mean_acc: mean accuracy value
         """
-        if self.setting in ['general-continual', 'domain-il', 'biased-class-il']:
+        if self.setting in ["general-continual", "domain-il", "biased-class-il"]:
             self.accs.append(mean_acc)
         else:
             mean_acc_class_il, mean_acc_task_il = mean_acc
@@ -182,11 +186,11 @@ class Logger:
         Args:
             accs: the accuracy values
         """
-        if self.setting == 'class-il':
+        if self.setting == "class-il":
             acc_class_il, acc_task_il = accs
             self.fullaccs.append(acc_class_il)
             self.fullaccs_mask_classes.append(acc_task_il)
-        elif self.setting == 'biased-class-il':
+        elif self.setting == "biased-class-il":
             self.fullaccs.append(accs)
 
     def log_system_stats(self, cpu_res, gpu_res):
@@ -202,12 +206,12 @@ class Logger:
             self.cpu_res.append(cpu_res)
         if gpu_res is not None:
             self.gpu_res.append(gpu_res)
-            gpu_res = {f'GPU_{i}_memory_usage': r for i, r in gpu_res.items()}
+            gpu_res = {f"GPU_{i}_memory_usage": r for i, r in gpu_res.items()}
         else:
             gpu_res = {}
 
         if not self.args.nowand:
-            wandb.log({'CPU_memory_usage': cpu_res, **gpu_res})
+            wandb.log({"CPU_memory_usage": cpu_res, **gpu_res})
 
     def write(self, args: Dict[str, Any]) -> None:
         """
@@ -220,51 +224,112 @@ class Logger:
         wrargs = args.copy()
 
         for i, acc in enumerate(self.accs):
-            wrargs['accmean_task' + str(i + 1)] = acc
+            wrargs["accmean_task" + str(i + 1)] = acc
 
         for i, fa in enumerate(self.fullaccs):
             for j, acc in enumerate(fa):
-                wrargs['accuracy_' + str(j + 1) + '_task' + str(i + 1)] = acc
+                wrargs["accuracy_" + str(j + 1) + "_task" + str(i + 1)] = acc
 
-        wrargs['cpu_memory_usage'] = self.cpu_res
-        wrargs['gpu_memory_usage'] = self.gpu_res
+        wrargs["cpu_memory_usage"] = self.cpu_res
+        wrargs["gpu_memory_usage"] = self.gpu_res
 
-        wrargs['forward_transfer'] = self.fwt
-        wrargs['backward_transfer'] = self.bwt
-        wrargs['forgetting'] = self.forgetting
+        wrargs["forward_transfer"] = self.fwt
+        wrargs["backward_transfer"] = self.bwt
+        wrargs["forgetting"] = self.forgetting
+
+        if "seed" in args.keys():
+            wrargs["seed"] = args["seed"]
+            experiment_string = smart_joint(str(wrargs["seed"]))
+        else:
+            experiment_string = ""
+
+        if "poison_task" in args.keys():
+            wrargs["poison_task"] = args["poison_task"]
+            wrargs["pcp"] = args["pcp"]
+            wrargs["pp"] = args["pp"]
+            wrargs["corruptions"] = args["corruptions"]
+            wrargs["severity"] = args["severity"]
+            experiment_string = smart_joint(
+                experiment_string,
+                wrargs["corruptions"].join("_"),
+                "severity_" + str(wrargs["severity"]),
+                "pp_" + str(wrargs["pp"]),
+                "pcp_" + str(wrargs["pcp"]),
+                "poison_task_" + str(wrargs["poison_task"]),
+            )
+        else:
+            experiment_string = smart_joint(experiment_string, "")
 
         target_folder = smart_joint(base_path(), self.args.results_path)
 
         create_if_not_exists(smart_joint(target_folder, self.setting))
         create_if_not_exists(smart_joint(target_folder, self.setting, self.dataset))
-        create_if_not_exists(smart_joint(target_folder, self.setting, self.dataset, self.model))
+        create_if_not_exists(
+            smart_joint(target_folder, self.setting, self.dataset, self.model)
+        )
 
-        path = smart_joint(target_folder, self.setting, self.dataset, self.model, "logs.pyd")
+        path = smart_joint(
+            target_folder,
+            self.setting,
+            self.dataset,
+            self.model,
+            experiment_string,
+            "logs.pyd",
+        )
         logging.info("Logging results and arguments in " + path)
-        with open(path, 'a') as f:
-            f.write(str(wrargs) + '\n')
+        with open(path, "a") as f:
+            f.write(str(wrargs) + "\n")
 
-        if self.setting == 'class-il':
+        if self.setting == "class-il":
             create_if_not_exists(smart_joint(target_folder, "task-il/", self.dataset))
-            create_if_not_exists(smart_joint(target_folder, "task-il", self.dataset, self.model))
+            create_if_not_exists(
+                smart_joint(target_folder, "task-il", self.dataset, self.model)
+            )
 
             for i, acc in enumerate(self.accs_mask_classes):
-                wrargs['accmean_task' + str(i + 1)] = acc
+                wrargs["accmean_task" + str(i + 1)] = acc
 
             for i, fa in enumerate(self.fullaccs_mask_classes):
                 for j, acc in enumerate(fa):
-                    wrargs['accuracy_' + str(j + 1) + '_task' + str(i + 1)] = acc
+                    wrargs["accuracy_" + str(j + 1) + "_task" + str(i + 1)] = acc
 
-            wrargs['forward_transfer'] = self.fwt_mask_classes
-            wrargs['backward_transfer'] = self.bwt_mask_classes
-            wrargs['forgetting'] = self.forgetting_mask_classes
+            wrargs["forward_transfer"] = self.fwt_mask_classes
+            wrargs["backward_transfer"] = self.bwt_mask_classes
+            wrargs["forgetting"] = self.forgetting_mask_classes
 
-            path = smart_joint(target_folder, "task-il", self.dataset, self.model, "logs.pyd")
-            with open(path, 'a') as f:
-                f.write(str(wrargs) + '\n')
+            path = smart_joint(
+                target_folder,
+                "task-il",
+                self.dataset,
+                self.model,
+                experiment_string,
+                "logs.pyd",
+            )
+            with open(path, "a") as f:
+                f.write(str(wrargs) + "\n")
+
+        json_path = smart_joint(
+            target_folder,
+            "task-il",
+            self.dataset,
+            self.model,
+            experiment_string,
+            "logs.json",
+        )
+        with open(json_path, "a") as f:
+            json.dump(wrargs, f)
 
 
-def log_bias_accs(args: Namespace, logger: Logger, accs, t: int, setting: str, epoch=None, prefix="RESULT", future=False):
+def log_bias_accs(
+    args: Namespace,
+    logger: Logger,
+    accs,
+    t: int,
+    setting: str,
+    epoch=None,
+    prefix="RESULT",
+    future=False,
+):
     """
     Logs the accuracy values and other metrics for the bias dataset.
     """
@@ -292,12 +357,14 @@ def log_bias_accs(args: Namespace, logger: Logger, accs, t: int, setting: str, e
         mean_best_group.append(best_group)
         mean_gap_group.append(best_group - worst_group)
 
-        print(f"\tTask {i+1} - Worst: {worst_group}, Best: {best_group}, Avg: {avg_group}, Gap: {best_group - worst_group}")
+        print(
+            f"\tTask {i + 1} - Worst: {worst_group}, Best: {best_group}, Avg: {avg_group}, Gap: {best_group - worst_group}"
+        )
         log_dict = {
             f"worst/task_{i}": worst_group,
             f"best/task_{i}": best_group,
             f"avg/task_{i}": avg_group,
-            f"gap/task_{i}": best_group - worst_group
+            f"gap/task_{i}": best_group - worst_group,
         }
         if not args.nowand:
             wandb.log(log_dict)
@@ -310,12 +377,14 @@ def log_bias_accs(args: Namespace, logger: Logger, accs, t: int, setting: str, e
     mean_best_group = sum(mean_best_group) / len(mean_best_group)
     mean_gap_group = sum(mean_gap_group) / len(mean_gap_group)
 
-    print(f"Mean at {t+1} - Worst: {mean_worst_group}, Best: {mean_best_group}, Avg: {mean_avg_group}, Gap: {mean_gap_group}")
+    print(
+        f"Mean at {t + 1} - Worst: {mean_worst_group}, Best: {mean_best_group}, Avg: {mean_avg_group}, Gap: {mean_gap_group}"
+    )
     log_dict = {
         f"worst/mean": mean_worst_group,
         f"best/mean": mean_best_group,
         f"avg/mean": mean_avg_group,
-        f"gap/mean": mean_gap_group
+        f"gap/mean": mean_gap_group,
     }
 
     if not args.nowand:
@@ -327,7 +396,16 @@ def log_bias_accs(args: Namespace, logger: Logger, accs, t: int, setting: str, e
     return mean_avg_group, mean_worst_group, mean_best_group, mean_gap_group
 
 
-def log_accs(args: Namespace, logger: Logger, accs, t: int, setting: str, epoch=None, prefix="RESULT", future=False):
+def log_accs(
+    args: Namespace,
+    logger: Logger,
+    accs,
+    t: int,
+    setting: str,
+    epoch=None,
+    prefix="RESULT",
+    future=False,
+):
     """
     Logs the accuracy values and other metrics.
 
@@ -343,9 +421,14 @@ def log_accs(args: Namespace, logger: Logger, accs, t: int, setting: str, epoch=
         prefix: The prefix for the metrics (default="RESULT").
     """
 
-    mean_acc = print_mean_accuracy(accs, t + 1 if isinstance(t, (float, int)) else t,
-                                   setting, joint=args.joint,
-                                   epoch=epoch, future=future)
+    mean_acc = print_mean_accuracy(
+        accs,
+        t + 1 if isinstance(t, (float, int)) else t,
+        setting,
+        joint=args.joint,
+        epoch=epoch,
+        future=future,
+    )
 
     if not args.disable_log:
         logger.log(mean_acc)
@@ -356,19 +439,36 @@ def log_accs(args: Namespace, logger: Logger, accs, t: int, setting: str, epoch=
         if future:
             prefix += "_transf"
         if isinstance(mean_acc, float):  # domain or gcl
-            d2 = {f'{prefix}_domain_mean_accs{postfix}': mean_acc,
-                  **{f'{prefix}_domain_acc_{i}{postfix}': a for i, a in enumerate(accs[0])},
-                  'Task': t}
+            d2 = {
+                f"{prefix}_domain_mean_accs{postfix}": mean_acc,
+                **{
+                    f"{prefix}_domain_acc_{i}{postfix}": a
+                    for i, a in enumerate(accs[0])
+                },
+                "Task": t,
+            }
         else:
-            d2 = {f'{prefix}_class_mean_accs{postfix}': mean_acc[0], f'{prefix}_task_mean_accs{postfix}': mean_acc[1],
-                  **{f'{prefix}_class_acc_{i}{postfix}': a for i, a in enumerate(accs[0])},
-                  **{f'{prefix}_task_acc_{i}{postfix}': a for i, a in enumerate(accs[1])},
-                  'Task': t}
+            d2 = {
+                f"{prefix}_class_mean_accs{postfix}": mean_acc[0],
+                f"{prefix}_task_mean_accs{postfix}": mean_acc[1],
+                **{
+                    f"{prefix}_class_acc_{i}{postfix}": a for i, a in enumerate(accs[0])
+                },
+                **{f"{prefix}_task_acc_{i}{postfix}": a for i, a in enumerate(accs[1])},
+                "Task": t,
+            }
 
         wandb.log(d2)
 
 
-def log_extra_metrics(args, metric: float, metric_mask_class: float, metric_name: str, t: int, prefix="RESULT"):
+def log_extra_metrics(
+    args,
+    metric: float,
+    metric_mask_class: float,
+    metric_name: str,
+    t: int,
+    prefix="RESULT",
+):
     """
     Logs the accuracy values and other metrics.
 
@@ -384,17 +484,33 @@ def log_extra_metrics(args, metric: float, metric_mask_class: float, metric_name
         prefix: The prefix for the metrics (default="RESULT").
     """
 
-    print(f'{metric_name}: [Class-IL]: {metric:.2f} \t [Task-IL]: {metric_mask_class:.2f}', file=sys.stderr)
-    print(f'\tRaw {metric_name} values: Class-IL {metric} | Task-IL {metric_mask_class}', file=sys.stderr)
+    print(
+        f"{metric_name}: [Class-IL]: {metric:.2f} \t [Task-IL]: {metric_mask_class:.2f}",
+        file=sys.stderr,
+    )
+    print(
+        f"\tRaw {metric_name} values: Class-IL {metric} | Task-IL {metric_mask_class}",
+        file=sys.stderr,
+    )
 
-    log_dict = {f'{prefix}_class_{metric_name}': metric, f'{prefix}_task_{metric_name}': metric_mask_class, 'Task': t}
+    log_dict = {
+        f"{prefix}_class_{metric_name}": metric,
+        f"{prefix}_task_{metric_name}": metric_mask_class,
+        "Task": t,
+    }
 
     if not args.nowand:
         wandb.log(log_dict)
 
 
-def print_mean_accuracy(accs: np.ndarray, task_number: int,
-                        setting: str, joint=False, epoch=None, future=False) -> None:
+def print_mean_accuracy(
+    accs: np.ndarray,
+    task_number: int,
+    setting: str,
+    joint=False,
+    epoch=None,
+    future=False,
+) -> None:
     """
     Prints the mean accuracy on stderr.
 
@@ -411,38 +527,72 @@ def print_mean_accuracy(accs: np.ndarray, task_number: int,
     mean_acc = np.mean(accs, axis=1)
 
     if joint:
-        prefix = "Joint Accuracy" if epoch is None else f"Joint Accuracy (epoch {epoch})"
-        if setting == 'domain-il' or setting == 'general-continual':
+        prefix = (
+            "Joint Accuracy" if epoch is None else f"Joint Accuracy (epoch {epoch})"
+        )
+        if setting == "domain-il" or setting == "general-continual":
             mean_acc, _ = mean_acc
-            out_str = '{}: \t [Domain-IL]: {} %'.format(prefix, round(mean_acc, 2))
+            out_str = "{}: \t [Domain-IL]: {} %".format(prefix, round(mean_acc, 2))
             print(out_str, file=sys.stderr)
             logging.info(out_str)
-            print('\tRaw accuracy values: Domain-IL {}'.format(accs[0]), file=sys.stderr)
-            logging.info('\tRaw accuracy values: Domain-IL {}'.format(accs[0]))
+            print(
+                "\tRaw accuracy values: Domain-IL {}".format(accs[0]), file=sys.stderr
+            )
+            logging.info("\tRaw accuracy values: Domain-IL {}".format(accs[0]))
         else:
             mean_acc_class_il, mean_acc_task_il = mean_acc
-            out_str = '{}: \t [Class-IL]: {} % \t [Task-IL]: {} %'.format(prefix, round(mean_acc_class_il, 2), round(mean_acc_task_il, 2))
+            out_str = "{}: \t [Class-IL]: {} % \t [Task-IL]: {} %".format(
+                prefix, round(mean_acc_class_il, 2), round(mean_acc_task_il, 2)
+            )
             print(out_str, file=sys.stderr)
             logging.info(out_str)
-            print('\tRaw accuracy values: Class-IL {} | Task-IL {}'.format(accs[0], accs[1]), file=sys.stderr)
-            logging.info('\tRaw accuracy values: Class-IL {} | Task-IL {}'.format(accs[0], accs[1]))
+            print(
+                "\tRaw accuracy values: Class-IL {} | Task-IL {}".format(
+                    accs[0], accs[1]
+                ),
+                file=sys.stderr,
+            )
+            logging.info(
+                "\tRaw accuracy values: Class-IL {} | Task-IL {}".format(
+                    accs[0], accs[1]
+                )
+            )
     else:
         prefix = "Accuracy" if epoch is None else f"Accuracy (epoch {epoch})"
         prefix = "Future " + prefix if future else prefix
-        if setting == 'domain-il' or setting == 'general-continual':
+        if setting == "domain-il" or setting == "general-continual":
             mean_acc, _ = mean_acc
-            out_str = '{} for {} task(s): [Domain-IL]: {} %'.format(prefix, task_number, round(mean_acc, 2))
+            out_str = "{} for {} task(s): [Domain-IL]: {} %".format(
+                prefix, task_number, round(mean_acc, 2)
+            )
             print(out_str, file=sys.stderr)
             logging.info(out_str)
-            print('\tRaw accuracy values: Domain-IL {}'.format(accs[0]), file=sys.stderr)
-            logging.info('\tRaw accuracy values: Domain-IL {}'.format(accs[0]))
+            print(
+                "\tRaw accuracy values: Domain-IL {}".format(accs[0]), file=sys.stderr
+            )
+            logging.info("\tRaw accuracy values: Domain-IL {}".format(accs[0]))
         else:
             mean_acc_class_il, mean_acc_task_il = mean_acc
-            out_str = '{} for {} task(s): \t [Class-IL]: {} % \t [Task-IL]: {} %'.format(prefix, task_number, round(
-                mean_acc_class_il, 2), round(mean_acc_task_il, 2))
+            out_str = (
+                "{} for {} task(s): \t [Class-IL]: {} % \t [Task-IL]: {} %".format(
+                    prefix,
+                    task_number,
+                    round(mean_acc_class_il, 2),
+                    round(mean_acc_task_il, 2),
+                )
+            )
             print(out_str, file=sys.stderr)
             logging.info(out_str)
-            print('\tRaw accuracy values: Class-IL {} | Task-IL {}'.format(accs[0], accs[1]), file=sys.stderr)
-            logging.info('\tRaw accuracy values: Class-IL {} | Task-IL {}'.format(accs[0], accs[1]))
-    print('\n', file=sys.stderr)
+            print(
+                "\tRaw accuracy values: Class-IL {} | Task-IL {}".format(
+                    accs[0], accs[1]
+                ),
+                file=sys.stderr,
+            )
+            logging.info(
+                "\tRaw accuracy values: Class-IL {} | Task-IL {}".format(
+                    accs[0], accs[1]
+                )
+            )
+    print("\n", file=sys.stderr)
     return mean_acc
