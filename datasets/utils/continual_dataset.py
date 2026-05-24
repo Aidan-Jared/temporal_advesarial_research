@@ -646,11 +646,19 @@ def store_masked_loaders(
             test_dataset.task_ids = test_dataset.task_ids[test_mask]
 
         # add poision around here
-        if hasattr(setting.args, "poison_task") and setting.c_task in setting.args.poison_task:
-            train_dataset.data[train_mask], p_indicies = poison_dataset(train_dataset.data[train_mask], train_dataset.targets[train_mask], train_dataset.indexes[train_mask], setting)
+        if (
+            hasattr(setting.args, "poison_task")
+            and setting.c_task in setting.args.poison_task
+        ):
+            train_dataset.data[train_mask], p_indicies = poison_dataset(
+                train_dataset.data[train_mask],
+                train_dataset.targets[train_mask],
+                train_dataset.indexes[train_mask],
+                setting,
+            )
             if p_indicies is not None:
                 train_dataset.p_indicies = p_indicies
-            
+
         train_dataset.data = train_dataset.data[train_mask]
         train_dataset.targets = train_dataset.targets[train_mask]
         train_dataset.indexes = train_dataset.indexes[train_mask]
@@ -709,26 +717,39 @@ def fix_class_names_order(class_names: List[str], args: Namespace) -> List[str]:
         ]
     return class_names
 
+
 def poison_dataset(
     data: np.ndarray,
     targets: np.ndarray,
     indices: np.ndarray,
-    settings: ContinualDataset
+    settings: ContinualDataset,
 ) -> tuple[np.ndarray, np.ndarray | None]:
     n_classes = len(np.unique(targets))
     if hasattr(settings.args, "pcp"):
         n_poisoned_classes = int(np.ceil(n_classes * settings.args.pcp))
     else:
         n_poisoned_classes = int(np.ceil(n_classes * 0.5))
-    poisoned_classes = np.random.choice(np.unique(targets), n_poisoned_classes, replace=False)
-    
+    poisoned_classes = np.random.choice(
+        np.unique(targets), n_poisoned_classes, replace=False
+    )
+
     p_indicies = []
     for cls in poisoned_classes:
         p_mask = targets == cls
         if hasattr(settings.args, "pp"):
-            p_indicies.append(np.random.choice(np.where(p_mask)[0], int(np.sum(p_mask) * settings.args.pp), replace=False))
+            p_indicies.append(
+                np.random.choice(
+                    np.where(p_mask)[0],
+                    int(np.sum(p_mask) * settings.args.pp),
+                    replace=False,
+                )
+            )
         else:
-            p_indicies.append(np.random.choice(np.where(p_mask)[0], int(np.sum(p_mask) * 0.5), replace=False))
+            p_indicies.append(
+                np.random.choice(
+                    np.where(p_mask)[0], int(np.sum(p_mask) * 0.5), replace=False
+                )
+            )
     if hasattr(settings.args, "corruptions"):
         # corruptions = settings.args.corruptions[0].split(" ")
         corruptions = settings.args.corruptions
@@ -736,8 +757,10 @@ def poison_dataset(
         p_indicies = np.array_split(p_indicies, len(corruptions))
         for idx, method in enumerate(corruptions):
             attack = corruption_dict[method]
+
             def _apply_attack(data, severity):
                 return attack(data, severity)
+
             if hasattr(settings.args, "severity"):
                 severity = settings.args.severity
             else:
@@ -746,9 +769,9 @@ def poison_dataset(
             # impliment vmaping when time allows
             # data[p_indicies[idx]] = torch.func.vmap(_apply_attack, in_dims=(0, None))(data[p_indicies[idx]], severity)
             for i in range(len(p_indicies[idx])):
-               p_image  = _apply_attack(data[p_indicies[idx][i]], severity)
-               data[p_indicies[idx][i]] = p_image
+                p_image = _apply_attack(data[p_indicies[idx][i]], severity)
+                data[p_indicies[idx][i]] = p_image
     else:
         return data, None
-    
-    return data, np.stack(p_indicies)
+
+    return data, np.concatenate(p_indicies)
