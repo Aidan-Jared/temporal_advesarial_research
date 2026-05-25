@@ -31,12 +31,12 @@
       "--pp",
       "0.5",
       "--corruptions",
-      "gaussian_noise", 
+      "gaussian_noise",
       "shot_noise",
       "--severity",
-      "1"
+      "1",
     ],
     "cwd": "$ZED_WORKTREE_ROOT",
     "program": "$ZED_WORKTREE_ROOT/main.py",
-  }
+  },
 ]

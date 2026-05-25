@@ -79,7 +79,6 @@ class Logger:
 
         return dic
 
-    def load(self, dic):
         """
         Loads the state of the logger from a dictionary.
 
@@ -224,7 +223,7 @@ class Logger:
         wrargs = args.copy()
 
         for i, acc in enumerate(self.accs):
-            wrargs["accmean_task" + str(i + 1)] = acc
+            wrargs["accmean_task" + str(i + 1)] = acc.item()
 
         for i, fa in enumerate(self.fullaccs):
             for j, acc in enumerate(fa):
@@ -250,16 +249,24 @@ class Logger:
             wrargs["corruptions"] = args["corruptions"]
             wrargs["severity"] = args["severity"]
             experiment_string = (
-                experiment_string
+                "seed_"
+                + experiment_string
+                + "_"
+                + "corruptions_"
                 + "_".join(wrargs["corruptions"])
+                + "_"
                 + "severity_"
                 + str(wrargs["severity"])
+                + "_"
                 + "pp_"
                 + str(wrargs["pp"])
+                + "_"
                 + "pcp_"
                 + str(wrargs["pcp"])
+                + "_"
                 + "poison_task_"
-                + "_".join(wrargs["poison_task"])
+                + "_".join(map(str, wrargs["poison_task"]))
+                + "_"
             )
         else:
             experiment_string = experiment_string + ""
@@ -291,7 +298,7 @@ class Logger:
             )
 
             for i, acc in enumerate(self.accs_mask_classes):
-                wrargs["accmean_task" + str(i + 1)] = acc
+                wrargs["accmean_task" + str(i + 1)] = acc.item()
 
             for i, fa in enumerate(self.fullaccs_mask_classes):
                 for j, acc in enumerate(fa):
@@ -311,9 +318,12 @@ class Logger:
             with open(path, "a") as f:
                 f.write(str(wrargs) + "\n")
 
+        create_if_not_exists(
+            smart_joint(target_folder, "json", self.dataset, self.model)
+        )
         json_path = smart_joint(
             target_folder,
-            "task-il",
+            "json",
             self.dataset,
             self.model,
             experiment_string + "logs.json",
