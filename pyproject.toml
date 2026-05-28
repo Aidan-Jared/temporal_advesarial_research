@@ -74,6 +74,7 @@ extra = [
 ]
 
 [tool.uv]
+managed = true
 exclude-newer = "30 days"
 environments = [
     "sys_platform == 'linux'",
@@ -83,6 +84,9 @@ environments = [
 
 [tool.uv.sources]
 clip = { git = "https://github.com/openai/CLIP.git" }
+# torch = { editable = true, path = "./" }
+# torchvision = { editable = true, path = "./" }
+# opencv-python = { editable = true, path = "./" }
 
 [tool.uv.workspace]
 members = ["docs"]
