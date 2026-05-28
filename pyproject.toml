@@ -42,8 +42,6 @@ dependencies = [
     "scipy>=1.15.3",
     "sentencepiece>=0.2.0",
     "timm==0.9.8",
-    "torch>=2.1.0",
-    "torchvision>=0.21.0",
     "tqdm>=4.67.1",
     "wand>=0.7.0",
     "wandb>=0.20.1",
@@ -77,6 +75,11 @@ extra = [
 
 [tool.uv]
 exclude-newer = "30 days"
+environments = [
+    "sys_platform == 'linux'",
+    "sys_platform == 'win32'",
+    "sys_platform == 'darwin'"
+]
 
 [tool.uv.sources]
 clip = { git = "https://github.com/openai/CLIP.git" }
