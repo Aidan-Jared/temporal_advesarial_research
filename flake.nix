@@ -33,16 +33,14 @@
             export UV_PYTHON_PREFERENCE="only-system"
             export UV_PYTHON="$(which python3)"
 
-            # 2. Map the critical paths for CUDA, Triton, and host graphics
-            # Triton specifically compiles kernels on the fly and needs stdenv headers/libs
             export LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib:${pkgs.lib.makeLibraryPath [
               pkgs.stdenv.cc.cc.lib
               pkgs.zlib
               pkgs.glib
               pkgs.linuxPackages.nvidia_x11
-              pkgs.cudaPackages.cuda_cudart # Crucial for PyTorch/Triton bindings
+              pkgs.cudaPackages.cuda_cudart
 
-              pkgs.libxcb       # Fixes the libxcb.so.1 error
+              pkgs.libxcb
               pkgs.libX11
               pkgs.libXext
               pkgs.libXrender
@@ -52,12 +50,10 @@
               pkgs.imagemagick
             ]}:$LD_LIBRARY_PATH"
 
-            # 3. Fix Triton's "On-the-fly" Compilation in NixOS
-            # Triton invokes 'g++' and 'ld' behind the scenes. We must point it to Nix's toolchain.
+            
             export CC="${pkgs.stdenv.cc}/bin/cc"
             export CXX="${pkgs.stdenv.cc}/bin/c++"
-            
-            # 4. If uv still chokes on the binary wheel, we force a source compilation environment
+                        
             export EXTRA_LDFLAGS="-L/run/opengl-driver/lib"
             export EXTRA_CCFLAGS="-I/usr/include"
           '';
