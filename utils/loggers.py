@@ -328,6 +328,9 @@ class Logger:
             self.model,
             experiment_string + "logs.json",
         )
+        for k, v in wrargs.items():
+            if type(v) == np.ndarray:
+                wrargs[k] = v.tolist()
         with open(json_path, "a") as f:
             json.dump(wrargs, f)
 
