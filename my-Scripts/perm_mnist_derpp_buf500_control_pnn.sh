@@ -9,6 +9,7 @@ uv run main.py \
     --dataset perm-mnist \
     --backbone mnistmlp-pnn \
     --model derpp \
+    --enable_other_metrics 0\
     --model_config base \
     --buffer_size 500 \
     --lr 0.2 \

@@ -8,6 +8,7 @@ uv run main.py \
     --runs 5 \
     --dataset mnist-360 \
     --backbone mnistmlp-pnn \
+    --enable_other_metrics 0\
     --model ewc-on \
     --model_config base \
     --lr 0.03 \

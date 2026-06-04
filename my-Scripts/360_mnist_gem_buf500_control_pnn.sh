@@ -8,6 +8,7 @@ uv run main.py \
     --runs 5 \
     --dataset seq-mnist \
     --backbone mnist-360 \
+    --enable_other_metrics 0\
     --model gem \
     --model_config base \
     --buffer_size 500 \

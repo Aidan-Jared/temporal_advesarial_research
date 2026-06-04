@@ -11,6 +11,7 @@ uv run main.py \
     --model gem \
     --model_config base \
     --buffer_size 500 \
+    --enable_other_metrics 0\
     --lr 0.03 \
     --gamma 0.5 \
     --batch_size 10 \

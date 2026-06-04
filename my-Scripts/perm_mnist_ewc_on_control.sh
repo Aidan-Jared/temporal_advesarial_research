@@ -7,7 +7,8 @@ uv run main.py \
     --seed 42 \
     --runs 5 \
     --dataset perm-mnist \
-    --backbone MNISTMLP \
+    --backbone mnistmlp \
+    --enable_other_metrics 0 \
     --model ewc-on \
     --model_config base \
     --lr 0.1 \
