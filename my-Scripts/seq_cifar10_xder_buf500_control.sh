@@ -8,6 +8,10 @@ uv run main.py \
     --runs 5 \
     --dataset seq-cifar10 \
     --model xder \
+<<<<<<< HEAD
+=======
+    --backbone reduced-resnet18 \
+>>>>>>> master
     --model_config base \
     --buffer_size 500 \
     --m 0.7 \

@@ -8,6 +8,10 @@ uv run main.py \
     --runs 5 \
     --dataset seq-cifar10 \
     --model ewc-on \
+<<<<<<< HEAD
+=======
+    --backbone reduced-resnet18 \
+>>>>>>> master
     --model_config base \
     --lr 0.03 \
     --e_lambda 10 \

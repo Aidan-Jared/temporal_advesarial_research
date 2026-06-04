@@ -8,6 +8,10 @@ uv run main.py \
     --runs 5 \
     --dataset seq-cifar100 \
     --model derpp \
+<<<<<<< HEAD
+=======
+    --backbone reduced-resnet18 \
+>>>>>>> master
     --model_config base \
     --buffer_size 2000 \
     --lr 0.03 \

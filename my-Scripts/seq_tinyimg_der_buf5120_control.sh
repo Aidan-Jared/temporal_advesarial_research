@@ -8,6 +8,10 @@ uv run main.py \
     --runs 5 \
     --dataset seq-tinyimg \
     --model der \
+<<<<<<< HEAD
+=======
+    --backbone resnet18-7x7 \
+>>>>>>> master
     --model_config base \
     --buffer_size 5120 \
     --lr 0.03 \
