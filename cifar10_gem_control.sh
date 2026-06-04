@@ -8,5 +8,8 @@ uv run main.py \
     --runs 5\
     --dataset seq-cifar10\
     --model gem\
-    --buffer_size 200\
-    --model_config best\
+    --buffer_size 500\
+    --lr .03\
+    --gamma 0.5\
+    --batch_size 32\
+    --n_epochs 32
