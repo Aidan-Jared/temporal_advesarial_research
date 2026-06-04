@@ -321,6 +321,7 @@ class Logger:
         create_if_not_exists(
             smart_joint(target_folder, "json", self.dataset, self.model)
         )
+
         json_path = smart_joint(
             target_folder,
             "json",
@@ -328,8 +329,15 @@ class Logger:
             self.model,
             experiment_string + "logs.json",
         )
+
+        exclude_keys = ["cpu_memory_usage", "gpu_memory_usage"]
+
+        export_json = {
+            k: wrargs[k] for k in set(list(wrargs.keys())) - set(exclude_keys)
+        }
+
         with open(json_path, "a") as f:
-            json.dump(wrargs, f)
+            json.dump(export_json, f)
 
 
 def log_bias_accs(
