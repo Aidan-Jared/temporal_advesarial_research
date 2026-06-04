@@ -331,6 +331,12 @@ class Logger:
             self.model,
             experiment_string + "logs.json",
         )
+<<<<<<< HEAD
+=======
+        for k, v in wrargs.items():
+            if type(v) == np.ndarray:
+                wrargs[k] = v.tolist()
+>>>>>>> master
 
         exclude_keys = ["cpu_memory_usage", "gpu_memory_usage"]
 

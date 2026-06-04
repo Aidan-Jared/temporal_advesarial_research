@@ -9,6 +9,10 @@ uv run main.py \
     --dataset mnist-360 \
     --backbone mnistmlp-pnn \
     --model derpp \
+<<<<<<< HEAD
+=======
+    --enable_other_metrics 0\
+>>>>>>> master
     --model_config base \
     --buffer_size 500 \
     --lr 0.03 \

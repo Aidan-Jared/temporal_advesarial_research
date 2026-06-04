@@ -8,7 +8,14 @@ uv run main.py \
     --runs 5 \
     --dataset seq-cifar10 \
     --model gem \
+<<<<<<< HEAD
     --backbone reduced-resnet18 \
+=======
+<<<<<<< HEAD
+=======
+    --backbone reduced-resnet18 \
+>>>>>>> master
+>>>>>>> master
     --model_config base \
     --buffer_size 500 \
     --lr 0.03 \

@@ -8,6 +8,10 @@ uv run main.py \
     --runs 5 \
     --dataset perm-mnist \
     --backbone mnistmlp-pnn \
+<<<<<<< HEAD
+=======
+    --enable_other_metrics 0\
+>>>>>>> master
     --model ewc-on \
     --model_config base \
     --lr 0.1 \

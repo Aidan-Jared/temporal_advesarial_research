@@ -8,6 +8,10 @@ uv run main.py \
     --runs 5 \
     --dataset perm-mnist \
     --model gem \
+<<<<<<< HEAD
+=======
+    --enable_other_metrics 0\
+>>>>>>> master
     --model_config base \
     --backbone mnistmlp-pnn \
     --buffer_size 500 \
