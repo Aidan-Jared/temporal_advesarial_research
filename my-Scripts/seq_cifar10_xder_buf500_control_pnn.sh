@@ -6,8 +6,9 @@ set -e
 uv run main.py \
     --seed 42 \
     --runs 5 \
-    --dataset seq-cifar100 \
+    --dataset seq-cifar10 \
     --model xder \
+    --backbone resnet18-pnn \
     --model_config base \
     --buffer_size 500 \
     --m 0.7 \

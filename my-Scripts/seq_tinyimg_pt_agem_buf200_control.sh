@@ -8,9 +8,9 @@ uv run main.py \
     --runs 5 \
     --dataset seq-tinyimg \
     --model agem \
-    --backbone resnet18-7x7 \
+    --backbone resnet18-7x7-pt \
     --model_config base \
-    --buffer_size 500 \
+    --buffer_size 200 \
     --lr 0.01 \
     --minibatch_size 32 \
     --batch_size 32 \

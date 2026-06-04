@@ -8,6 +8,7 @@ uv run main.py \
     --runs 5 \
     --dataset seq-cifar10 \
     --model agem \
+    --backbone reduced-resnet18 \
     --model_config base \
     --buffer_size 500 \
     --lr 0.03 \

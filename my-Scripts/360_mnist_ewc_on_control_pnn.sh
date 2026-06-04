@@ -6,12 +6,12 @@ set -e
 uv run main.py \
     --seed 42 \
     --runs 5 \
-    --dataset seq-cifar10 \
+    --dataset mnist-360 \
+    --backbone mnistmlp-pnn \
     --model ewc-on \
-    --backbone reduced-resnet18 \
     --model_config base \
     --lr 0.03 \
-    --e_lambda 10 \
+    --e_lambda 90 \
     --gamma 1.0 \
-    --batch_size 32 \
-    --n_epochs 50
+    --batch_size 10 \
+    --n_epochs 1

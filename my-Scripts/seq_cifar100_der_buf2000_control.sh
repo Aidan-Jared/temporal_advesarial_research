@@ -8,6 +8,7 @@ uv run main.py \
     --runs 5 \
     --dataset seq-cifar100 \
     --model der \
+    --backbone reduced-resnet18 \
     --model_config base \
     --buffer_size 2000 \
     --lr 0.03 \

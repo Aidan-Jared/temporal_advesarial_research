@@ -319,7 +319,9 @@ class Logger:
                 f.write(str(wrargs) + "\n")
 
         create_if_not_exists(
-            smart_joint(target_folder, "json", self.dataset, self.model)
+            smart_joint(
+                target_folder, "json", self.dataset, self.model, self.args.backbone
+            )
         )
 
         json_path = smart_joint(
@@ -329,7 +331,6 @@ class Logger:
             self.model,
             experiment_string + "logs.json",
         )
-<<<<<<< HEAD
 
         exclude_keys = ["cpu_memory_usage", "gpu_memory_usage"]
 
@@ -337,13 +338,9 @@ class Logger:
             k: wrargs[k] for k in set(list(wrargs.keys())) - set(exclude_keys)
         }
 
-=======
-        for k, v in wrargs.items():
-            if type(v) == np.ndarray:
-                wrargs[k] = v.tolist()
->>>>>>> master
         with open(json_path, "a") as f:
             json.dump(export_json, f)
+        return export_json
 
 
 def log_bias_accs(

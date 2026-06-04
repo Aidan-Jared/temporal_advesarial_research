@@ -6,13 +6,12 @@ set -e
 uv run main.py \
     --seed 42 \
     --runs 5 \
-    --dataset seq-tinyimg \
-    --model derpp \
+    --dataset seq-mnist \
+    --backbone mnist-360 \
+    --model gem \
     --model_config base \
     --buffer_size 500 \
     --lr 0.03 \
-    --minibatch_size 32 \
-    --alpha 0.2 \
-    --beta 0.5 \
-    --batch_size 32 \
-    --n_epochs 100
+    --gamma 0.5 \
+    --batch_size 10 \
+    --n_epochs 1

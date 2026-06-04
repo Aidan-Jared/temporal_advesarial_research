@@ -7,11 +7,11 @@ uv run main.py \
     --seed 42 \
     --runs 5 \
     --dataset seq-cifar10 \
-    --model gem \
-    --backbone reduced-resnet18 \
+    --model agem \
+    --backbone resnet18-pnn \
     --model_config base \
     --buffer_size 500 \
     --lr 0.03 \
-    --gamma 0.5 \
+    --minibatch_size 32 \
     --batch_size 32 \
     --n_epochs 50

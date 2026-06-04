@@ -8,11 +8,12 @@ uv run main.py \
     --runs 5 \
     --dataset seq-tinyimg \
     --model derpp \
+    --backbone resnet18-7x7-pt \
     --model_config base \
-    --buffer_size 200 \
+    --buffer_size 5120 \
     --lr 0.03 \
     --minibatch_size 32 \
     --alpha 0.1 \
-    --beta 1.0 \
+    --beta 0.5 \
     --batch_size 32 \
     --n_epochs 100

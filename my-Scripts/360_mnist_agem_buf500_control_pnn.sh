@@ -6,12 +6,12 @@ set -e
 uv run main.py \
     --seed 42 \
     --runs 5 \
-    --dataset seq-tinyimg \
+    --dataset mnist-360 \
+    --backbone mnistmlp-pnn \
     --model agem \
-    --backbone resnet18-7x7 \
     --model_config base \
     --buffer_size 500 \
-    --lr 0.01 \
-    --minibatch_size 32 \
-    --batch_size 32 \
-    --n_epochs 100
+    --lr 0.1 \
+    --minibatch_size 128 \
+    --batch_size 10 \
+    --n_epochs 1
