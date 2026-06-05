@@ -9,6 +9,7 @@ uv run main.py \
     --dataset mnist-360 \
     --backbone mnistmlp-pnn \
     --enable_other_metrics 0\
+    --input_size 784 \
     --model agem \
     --model_config base \
     --buffer_size 500 \

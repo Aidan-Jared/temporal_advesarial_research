@@ -696,6 +696,7 @@ def main(args=None):
     from utils.training import train
     from utils.conf import set_random_seed
     from utils import create_if_not_exists, smart_joint
+    from utils.args import get_single_arg_value
     import json
 
     results = []
@@ -710,19 +711,6 @@ def main(args=None):
 
             res = train(model, dataset, args)
             results.append(res)
-
-        path = create_if_not_exists(
-            smart_joint(
-                "data/results/ndjson",
-                args.dataset,
-                args.backbone + "_" + args.buffer_size + ".ndjson",
-            )
-        )
-
-        with open(path, "w") as f:
-            for record in results:
-                f.write(json.dumps(record) + "\n")
-
     else:
         model, dataset, args = initialize(args)
 

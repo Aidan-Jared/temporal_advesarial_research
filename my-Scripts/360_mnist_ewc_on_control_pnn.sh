@@ -9,6 +9,7 @@ uv run main.py \
     --dataset mnist-360 \
     --backbone mnistmlp-pnn \
     --enable_other_metrics 0\
+    --input_size 784 \
     --model ewc-on \
     --model_config base \
     --lr 0.03 \

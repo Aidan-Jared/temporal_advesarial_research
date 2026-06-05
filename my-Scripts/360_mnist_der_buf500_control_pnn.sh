@@ -8,6 +8,7 @@ uv run main.py \
     --runs 5 \
     --dataset mnist-360 \
     --backbone mnistmlp-pnn \
+    --input_size 784 \
     --enable_other_metrics 0\
     --model der \
     --model_config base \

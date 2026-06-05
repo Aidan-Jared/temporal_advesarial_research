@@ -9,6 +9,7 @@ uv run main.py \
     --dataset seq-mnist \
     --backbone mnistmlp-pnn \
     --model ewc-on \
+    --input_size 784 \
     --model_config base \
     --lr 0.03 \
     --e_lambda 90 \

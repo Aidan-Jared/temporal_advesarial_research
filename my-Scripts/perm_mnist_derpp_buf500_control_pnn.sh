@@ -10,6 +10,7 @@ uv run main.py \
     --backbone mnistmlp-pnn \
     --model derpp \
     --enable_other_metrics 0\
+    --input_size 784 \
     --model_config base \
     --buffer_size 500 \
     --lr 0.2 \

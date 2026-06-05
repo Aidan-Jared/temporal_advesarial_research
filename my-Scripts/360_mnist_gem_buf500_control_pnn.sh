@@ -6,8 +6,9 @@ set -e
 uv run main.py \
     --seed 42 \
     --runs 5 \
-    --dataset seq-mnist \
-    --backbone mnist-360 \
+    --dataset mnist-360 \
+    --backbone mnistmlp-pnn \
+    --input_size 784 \
     --enable_other_metrics 0\
     --model gem \
     --model_config base \
