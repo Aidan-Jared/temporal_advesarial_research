@@ -11,6 +11,10 @@ uv run main.py \
 <<<<<<< HEAD
 =======
     --enable_other_metrics 0\
+<<<<<<< HEAD
+>>>>>>> master
+=======
+    --input_size 784 \
 >>>>>>> master
     --model agem \
     --model_config base \

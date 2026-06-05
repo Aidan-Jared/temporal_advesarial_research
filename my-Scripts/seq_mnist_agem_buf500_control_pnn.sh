@@ -8,6 +8,7 @@ uv run main.py \
     --runs 5 \
     --dataset seq-mnist \
     --backbone mnistmlp-pnn \
+    --input_size 784 \
     --model agem \
     --model_config base \
     --buffer_size 500 \

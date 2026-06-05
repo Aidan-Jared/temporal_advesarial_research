@@ -8,6 +8,7 @@ uv run main.py \
     --runs 5 \
     --dataset mnist-360 \
     --backbone mnistmlp-pnn \
+    --input_size 784 \
     --model derpp \
 <<<<<<< HEAD
 =======

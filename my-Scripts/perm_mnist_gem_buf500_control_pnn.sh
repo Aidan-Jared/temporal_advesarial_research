@@ -9,7 +9,11 @@ uv run main.py \
     --dataset perm-mnist \
     --model gem \
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+    --input_size 784 \
+>>>>>>> master
     --enable_other_metrics 0\
 >>>>>>> master
     --model_config base \

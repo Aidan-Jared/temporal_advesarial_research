@@ -11,6 +11,7 @@ uv run main.py \
     --model derpp \
     --model_config base \
     --buffer_size 500 \
+    --input_size 784 \
     --lr 0.03 \
     --minibatch_size 10 \
     --alpha 1.0 \

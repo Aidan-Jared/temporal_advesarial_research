@@ -329,6 +329,7 @@ class Logger:
             "json",
             self.dataset,
             self.model,
+            self.args.backbone,
             experiment_string + "logs.json",
         )
 <<<<<<< HEAD

@@ -12,6 +12,10 @@ uv run main.py \
 <<<<<<< HEAD
 =======
     --enable_other_metrics 0\
+<<<<<<< HEAD
+>>>>>>> master
+=======
+    --input_size 784 \
 >>>>>>> master
     --model_config base \
     --buffer_size 500 \

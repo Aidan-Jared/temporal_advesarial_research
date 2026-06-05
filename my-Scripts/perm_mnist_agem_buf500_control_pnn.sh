@@ -9,7 +9,11 @@ uv run main.py \
     --dataset perm-mnist \
     --backbone mnistmlp-pnn \
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+    --input_size 784 \
+>>>>>>> master
     --enable_other_metrics 0\
 >>>>>>> master
     --model agem \
