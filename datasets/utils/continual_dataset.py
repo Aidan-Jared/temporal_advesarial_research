@@ -769,7 +769,9 @@ def poison_dataset(
             # impliment vmaping when time allows
             # data[p_indicies[idx]] = torch.func.vmap(_apply_attack, in_dims=(0, None))(data[p_indicies[idx]], severity)
             for i in range(len(p_indicies[idx])):
-                p_image = _apply_attack(data[p_indicies[idx][i]], severity)
+                p_image = torch.from_numpy(
+                    _apply_attack(data[p_indicies[idx][i]], severity)
+                )
                 data[p_indicies[idx][i]] = p_image
     else:
         return data, None
