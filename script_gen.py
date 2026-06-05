@@ -2,7 +2,6 @@ from utils.best_args import best_args
 
 if __name__ == "__main__":
     datasets = [
-        "mnist-360",
         "perm-mnist",
         "seq-mnist",
         "seq-cifar100",
