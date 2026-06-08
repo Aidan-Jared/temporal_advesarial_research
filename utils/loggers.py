@@ -512,23 +512,26 @@ def log_extra_metrics(
         prefix: The prefix for the metrics (default="RESULT").
     """
 
-    print(
-        f"{metric_name}: [Class-IL]: {metric:.2f} \t [Task-IL]: {metric_mask_class:.2f}",
-        file=sys.stderr,
-    )
-    print(
-        f"\tRaw {metric_name} values: Class-IL {metric} | Task-IL {metric_mask_class}",
-        file=sys.stderr,
-    )
+    try:
+        print(
+            f"{metric_name}: [Class-IL]: {metric:.2f} \t [Task-IL]: {metric_mask_class:.2f}",
+            file=sys.stderr,
+        )
+        print(
+            f"\tRaw {metric_name} values: Class-IL {metric} | Task-IL {metric_mask_class}",
+            file=sys.stderr,
+        )
 
-    log_dict = {
-        f"{prefix}_class_{metric_name}": metric,
-        f"{prefix}_task_{metric_name}": metric_mask_class,
-        "Task": t,
-    }
+        log_dict = {
+            f"{prefix}_class_{metric_name}": metric,
+            f"{prefix}_task_{metric_name}": metric_mask_class,
+            "Task": t,
+        }
 
-    if not args.nowand:
-        wandb.log(log_dict)
+        if not args.nowand:
+            wandb.log(log_dict)
+    except:
+        print("tried")
 
 
 def print_mean_accuracy(

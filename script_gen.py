@@ -40,8 +40,8 @@ if __name__ == "__main__":
                         )
                         if buffer > 0:
                             output = output + f" --buffer_size {buffer} "
-                        if data == "mnist-360":
-                            output += " --enable_other_metrics 0 "
+                        if "mnistmlp-pnn" in backbone:
+                            output += f" --input_size {28 * 28} "
                         for arg, value in param[buffer].items():
                             output += f" --{arg} {value} "
                         # print(output)
