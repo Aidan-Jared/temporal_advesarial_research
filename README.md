@@ -1,16 +1,16 @@
-<p align="center">
+<!-- <p align="center"> -->
   <!-- <img width="230" height="230" src="docs/_static/logo.png" alt="logo"> -->
-  <img width="1000" height="200" src="docs/_static/mammoth_banner.svg" alt="logo">
-</p>
+  <!-- <img width="1000" height="200" src="docs/_static/mammoth_banner.svg" alt="logo"> -->
+<!-- </p> -->
 
-<p align="center">
-  <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/aimagelab/mammoth">
-  <a href="https://aimagelab.github.io/mammoth/index.html"><img alt="Documentation" src="https://img.shields.io/badge/docs-mammoth-blue?style=flat&logo=readthedocs"></a>
-  <img alt="GitHub stars" src="https://img.shields.io/github/stars/aimagelab/mammoth?style=social">
-  <img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?&logo=PyTorch&logoColor=white">
-</p>
+<!-- <p align="center"> -->
+  <!-- <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/aimagelab/mammoth"> -->
+  <!-- <a href="https://aimagelab.github.io/mammoth/index.html"><img alt="Documentation" src="https://img.shields.io/badge/docs-mammoth-blue?style=flat&logo=readthedocs"></a> -->
+  <!-- <img alt="GitHub stars" src="https://img.shields.io/github/stars/aimagelab/mammoth?style=social"> -->
+  <!-- <img alt="PyTorch" src="https://img.shields.io/badge/PyTorch-%23EE4C2C.svg?&logo=PyTorch&logoColor=white"> -->
+<!-- </p> -->
 
-# 🦣 Mammoth - A PyTorch Framework for Benchmarking Continual Learning
+# Code from all credit to: 🦣 Mammoth - A PyTorch Framework for Benchmarking Continual Learning
 
 _Mammoth_ is built to streamline the development and benchmark of continual learning research. With **more than 70 methods and 20 datasets**, it includes the most complete list competitors and benchmarks for research purposes.
 
@@ -18,17 +18,19 @@ The core idea of Mammoth is that it is designed to be modular, easy to extend, a
 
 With Mammoth, nothing is set in stone. You can easily add new models, datasets, training strategies, or functionalities.
 
-## 📢 News
+So I added adversarial attacks to the model training.
 
-### [Task Arithmetic with KFAC regularization](https://arxiv.org/pdf/2602.17385)
-* Accepted @ ICLR 2026
+<!-- ## 📢 News -->
 
-You can now run it as:
+<!-- ### [Task Arithmetic with KFAC regularization](https://arxiv.org/pdf/2602.17385) -->
+<!-- * Accepted @ ICLR 2026 -->
 
-```bash
-python main.py --loadcheck <hf-checkpoint-url>
-python main.py --model tak --load_fisher 1 --fisher_cache hf://<user-or-org>/<repo>/<path>
-```
+<!-- You can now run it as: -->
+
+<!-- ```bash -->
+<!-- python main.py --loadcheck <hf-checkpoint-url> -->
+<!-- python main.py --model tak --load_fisher 1 --fisher_cache hf://<user-or-org>/<repo>/<path> -->
+<!-- ``` -->
 
 ## 📖 Table of Contents
 
@@ -86,6 +88,10 @@ python main.py --model derpp --dataset seq-cifar100 --model_config best
 ```
 
  > NOTE: the `--model_config` argument will look for a file `<model_name>.yaml` in the `models/config/` folder. This file should contain the hyperparameters for the best configuration of the model. You can find more information in [the documentation](https://aimagelab.github.io/mammoth/models/model_arguments.html#model-configurations-and-best-arguments).
+
+### Add Poission
+
+My additions to the code is image corruptions with parameters for severity, corruption method, task to poission, percent of classes to attack, and percent of samples in each class to attack. 
 
 ### Build a new model
 
