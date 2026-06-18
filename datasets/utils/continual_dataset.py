@@ -645,19 +645,19 @@ def store_masked_loaders(
         if hasattr(test_dataset, "task_ids"):
             test_dataset.task_ids = test_dataset.task_ids[test_mask]
 
-        # add poision around here
-        if (
-            hasattr(setting.args, "poison_task")
-            and setting.c_task in setting.args.poison_task
-        ):
-            train_dataset.data[train_mask], p_indicies = poison_dataset(
-                train_dataset.data[train_mask],
-                train_dataset.targets[train_mask],
-                train_dataset.indexes[train_mask],
-                setting,
-            )
-            if p_indicies is not None:
-                train_dataset.p_indicies = p_indicies
+        # # add poision around here
+        # if (
+        #     hasattr(setting.args, "poison_task")
+        #     and setting.c_task in setting.args.poison_task
+        # ):
+        #     train_dataset.data[train_mask], p_indicies = poison_dataset(
+        #         train_dataset.data[train_mask],
+        #         train_dataset.targets[train_mask],
+        #         train_dataset.indexes[train_mask],
+        #         setting,
+        #     )
+        #     if p_indicies is not None:
+        #         train_dataset.p_indicies = p_indicies
 
         train_dataset.data = train_dataset.data[train_mask]
         train_dataset.targets = train_dataset.targets[train_mask]
@@ -676,6 +676,18 @@ def store_masked_loaders(
                 "bias_label", test_dataset.bias_label[test_mask]
             )
 
+    if (
+        hasattr(setting.args, "poison_task")
+        and setting.c_task in setting.args.poison_task
+    ):
+        train_dataset.data[train_mask], p_indicies = poison_dataset(
+            train_dataset.data[train_mask],
+            train_dataset.targets[train_mask],
+            train_dataset.indexes[train_mask],
+            setting,
+        )
+        if p_indicies is not None:
+            train_dataset.p_indicies = p_indicies
     # Finalize data, apply unlabeled mask
     train_dataset, test_dataset = _prepare_data_loaders(
         train_dataset, test_dataset, setting
