@@ -15,6 +15,9 @@ parser.add_argument(
 )
 
 if __name__ == "__main__":
+
+    args = vars(parser.parse_args())
+    
     datasets = [
         "perm-mnist",
         "seq-mnist",

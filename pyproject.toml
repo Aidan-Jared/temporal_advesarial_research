@@ -21,6 +21,7 @@ keywords = [
 ]
 dependencies = [
     "accelerate>=1.6.0",
+    "altair>=6.1.0",
     "bitsandbytes>=0.45.4",
     "clip",
     "datasets>=4.5.0",
@@ -44,6 +45,8 @@ dependencies = [
     "sentencepiece>=0.2.0",
     "timm==0.9.8",
     "tqdm>=4.67.1",
+    "vegafusion>=2.0.3",
+    "vl-convert-python>=1.9.0.post1",
     "wand>=0.7.0",
     "wandb>=0.20.1",
 ]

@@ -30,6 +30,7 @@ import argparse
 import torch
 
 torch.set_num_threads(2)
+torch.multiprocessing.set_sharing_strategy("file_system")
 
 # if file is launched inside the `utils` folder
 if os.path.dirname(__file__) == "utils":
