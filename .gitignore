@@ -10,6 +10,7 @@ checkpoints/
 *.pkl
 # *.sh
 *.txt
+check.md
 json/
 out/
 err/

@@ -1,10 +1,11 @@
 from utils.best_args import best_args
 import argparse
+
 parser = argparse.ArgumentParser()
-parser.add_argument("--severity", type = int, default = 1)
-parser.add_argument("--poison_task", type = int, default = 0)
-parser.add_argument("--pcp", type = float, default = .5)
-parser.add_argument("--pp", type = float, default = .5)
+parser.add_argument("--severity", type=int, default=1)
+parser.add_argument("--poison_task", type=int, default=0)
+parser.add_argument("--pcp", type=float, default=0.5)
+parser.add_argument("--pp", type=float, default=0.5)
 parser.add_argument(
     "--corruptions",
     nargs="+",
@@ -15,9 +16,8 @@ parser.add_argument(
 )
 
 if __name__ == "__main__":
-
     args = vars(parser.parse_args())
-    
+
     datasets = [
         "perm-mnist",
         "seq-mnist",
@@ -44,27 +44,27 @@ if __name__ == "__main__":
                     continue
                 for backbone in data_backbone[data]:
                     for buffer in param.keys():
-                         output = (
-                             "--seed 42 "
-                             + " --runs 5 "
-                             + " --model_config base "
-                             + " --dataset "
-                             + data
-                             + " --model "
-                             + model
-                             + " --backbone "
-                             + backbone
-                             + " --severity "
-                             + str(args["severity"])
-                             + " --poison_task "
-                             + str(args["poison_task"])
-                             + " --pcp "
-                             + str(args["pcp"])
-                             + " --pp "
-                             + str(args["pp"])
-                             + " --corruptions "
-                             + " ".join(args["corruptions"])
-                         )
+                        output = (
+                            "--seed 42 "
+                            + " --runs 5 "
+                            + " --model_config base "
+                            + " --dataset "
+                            + data
+                            + " --model "
+                            + model
+                            + " --backbone "
+                            + backbone
+                            + " --severity "
+                            + str(args["severity"])
+                            + " --poison_task "
+                            + str(args["poison_task"])
+                            + " --pcp "
+                            + str(args["pcp"])
+                            + " --pp "
+                            + str(args["pp"])
+                            + " --corruptions "
+                            + " ".join(args["corruptions"])
+                        )
                         if buffer > 0:
                             output = output + f" --buffer_size {buffer} "
                         if "mnistmlp-pnn" in backbone:
