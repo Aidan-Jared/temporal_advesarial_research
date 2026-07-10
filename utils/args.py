@@ -675,7 +675,7 @@ def add_management_args(parser: ArgumentParser) -> None:
     )
     mng_group.add_argument(
         "--enable_other_metrics",
-        default=1,
+        default=0,
         type=binary_to_boolean_type,
         help="Enable computing additional metrics: forward and backward transfer.",
     )

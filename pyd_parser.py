@@ -1,7 +1,9 @@
 import glob
 import json
 import os
+
 import numpy as np
+from tqdm import tqdm
 
 
 def safe(obj):
@@ -35,10 +37,12 @@ def write_ndjson(read_path: str, write_path: str):
         "True": True,
     }
 
-    for file in glob.glob(read_path, recursive=True):
+    pbar = tqdm(glob.glob(read_path, recursive=True))
+
+    for file in pbar:
         try:
             with open(file, "r", encoding="utf-8") as f:
-                file_content = f.read().strip()
+                file_content = f.readline().strip()
 
             if not file_content:
                 continue
