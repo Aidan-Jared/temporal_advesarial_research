@@ -98,6 +98,7 @@ logs
 _autosummary
 generated
 val_permutations
+*.csv
 
 # Other prepare grid scripts except the example one
 scripts/prepare_grid*

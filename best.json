@@ -772,7 +772,12 @@
                                      "alpha": 0.1,
                                      "beta": 0.5,
                                      "batch_size": 32,
-                                     "n_epochs": 100}}},
+                                     "n_epochs": 100}},
+                    "xder": {
+                        500: {"constr_margin": 0.7, "alpha": 0.3, "beta": 0.8, "gamma": 0.85, "optim_wd": 0, "lambd": 0.05, "constr_eta": 0.01, "lr": 0.1, "simclr_temp": 5, "optim_mom": 0, "simclr_batch_size": 64, "simclr_num_aug": 2},
+                        2000: {"constr_margin": 0.3, "alpha": 0.3, "beta": 0.8, "gamma": 0.85, "optim_wd": 0, "lambd": 0.05, "constr_eta": 0.01, "lr": 0.1, "simclr_temp": 5, "optim_mom": 0, "simclr_batch_size": 64, "simclr_num_aug": 2}
+                    }
+                              },
     "mnist-360": {
         "sgd": {-1: {"lr": 0.1, "batch_size": 4}},
         "er": {200: {"lr": 0.2,
@@ -880,8 +885,8 @@
             2000: {"lr": 0.03, "optim_mom": 0, "optim_wd": 0, "alpha": 0.1, "beta": 0.5}
         },
         "xder": {
-            500: {"m": 0.7, "alpha": 0.3, "beta": 0.8, "gamma": 0.85, "optim_wd": 0, "lambd": 0.05, "eta": 0.001, "lr": 0.03, "simclr_temp": 5, "optim_mom": 0, "simclr_batch_size": 64, "simclr_num_aug": 2},
-            2000: {"m": 0.2, "alpha": 0.6, "beta": 0.9, "gamma": 0.85, "optim_wd": 0, "lambd": 0.05, "eta": 0.01, "lr": 0.03, "simclr_temp": 5, "optim_mom": 0, "simclr_batch_size": 64, "simclr_num_aug": 2}
+            500: {"constr_margin": 0.7, "alpha": 0.3, "beta": 0.8, "gamma": 0.85, "optim_wd": 0, "lambd": 0.05, "constr_eta": 0.001, "lr": 0.03, "simclr_temp": 5, "optim_mom": 0, "simclr_batch_size": 64, "simclr_num_aug": 2},
+            2000: {"constr_margin": 0.2, "alpha": 0.6, "beta": 0.9, "gamma": 0.85, "optim_wd": 0, "lambd": 0.05, "constr_eta": 0.01, "lr": 0.03, "simclr_temp": 5, "optim_mom": 0, "simclr_batch_size": 64, "simclr_num_aug": 2}
         }
     }
 

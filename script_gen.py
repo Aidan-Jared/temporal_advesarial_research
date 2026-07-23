@@ -27,7 +27,6 @@ if __name__ == "__main__":
     ]
     models = ["ewc_on", "gem", "agem", "der", "derpp", "xder"]
     data_backbone = {
-        # "mnist-360": ["mnistmlp", "mnistmlp-pnn"],
         "perm-mnist": ["mnistmlp", "mnistmlp-pnn"],
         "seq-mnist": ["mnistmlp", "mnistmlp-pnn"],
         "seq-cifar100": ["reduced-resnet18", "resnet18-pnn"],

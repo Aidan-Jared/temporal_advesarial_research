@@ -81,12 +81,15 @@ def write_ndjson(read_path: str, write_path: str):
 def main():
     task_path = "data/results/task-il/**/*.pyd"
     class_path = "data/results/class-il/**/*.pyd"
+    domain_path = "data/results/domain-il/**/*.pyd"
 
     print("Extracting task-il...")
     write_ndjson(task_path, "data/results/merged_task-il")
 
     print("Extracting class-il...")
     write_ndjson(class_path, "data/results/merged_class-il")
+    print("Extracting domain-il...")
+    write_ndjson(domain_path, "data/results/merged_domain-il")
 
     print("Done!")
 
