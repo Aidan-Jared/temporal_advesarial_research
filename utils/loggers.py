@@ -40,9 +40,13 @@ class Logger:
         """
         self.args = args
         self.accs = []
+        self.eces = []
         self.fullaccs = []
+        self.fulleces = []
         if setting_str == "class-il":
             self.accs_mask_classes = []
+            self.eces_mask_classes = []
+            self.fulleces_mask_classes = []
             self.fullaccs_mask_classes = []
         self.setting = setting_str
         self.dataset = dataset_str
@@ -66,6 +70,8 @@ class Logger:
         dic = {
             "accs": self.accs,
             "fullaccs": self.fullaccs,
+            "eces": self.eces,
+            "fulleces": self.fulleces,
             "fwt": self.fwt,
             "bwt": self.bwt,
             "forgetting": self.forgetting,
@@ -87,6 +93,8 @@ class Logger:
         """
         self.accs = dic["accs"]
         self.fullaccs = dic["fullaccs"]
+        self.eces = dic["eces"]
+        self.fulleces = dic["fulleces"]
         self.fwt = dic["fwt"]
         self.bwt = dic["bwt"]
         self.forgetting = dic["forgetting"]
@@ -96,6 +104,8 @@ class Logger:
         if self.setting == "class-il":
             self.accs_mask_classes = dic["accs_mask_classes"]
             self.fullaccs_mask_classes = dic["fullaccs_mask_classes"]
+            self.eces_mask_classes = dic["eces_mask_classes"]
+            self.fulleces_mask_classes = dic["fulleces_mask_classes"]
 
     def rewind(self, num):
         """
@@ -178,6 +188,21 @@ class Logger:
             self.accs.append(mean_acc_class_il)
             self.accs_mask_classes.append(mean_acc_task_il)
 
+    def log_ece(self, mean_ece: Union[np.ndarray, dict]) -> None:
+        """
+        Logs a mean accuracy value.
+
+        Args:
+            mean_acc: mean accuracy value
+        """
+        if self.setting in ["general-continual", "domain-il", "biased-class-il"]:
+            self.eces.append(mean_ece)
+        else:
+            mean_ece_class_il, mean_ece_task_il = mean_ece
+            self.eces.append(mean_ece_class_il)
+            self.eces_mask_classes.append(mean_ece_task_il)
+
+
     def log_fullacc(self, accs):
         """
         Logs all the accuracy of the classes from the current and past tasks.
@@ -191,6 +216,20 @@ class Logger:
             self.fullaccs_mask_classes.append(acc_task_il)
         elif self.setting == "biased-class-il":
             self.fullaccs.append(accs)
+            
+    def log_fullece(self, eces):
+        """
+        Logs all the eceuracy of the classes from the current and past tasks.
+
+        Args:
+            eces: the eceuracy values
+        """
+        if self.setting == "class-il":
+            ece_class_il, ece_task_il = eces
+            self.fulleces.append(ece_class_il)
+            self.fulleces_mask_classes.append(ece_task_il)
+        elif self.setting == "biased-class-il":
+            self.fulleces.append(eces)
 
     def log_system_stats(self, cpu_res, gpu_res):
         """
@@ -228,6 +267,13 @@ class Logger:
         for i, fa in enumerate(self.fullaccs):
             for j, acc in enumerate(fa):
                 wrargs["accuracy_" + str(j + 1) + "_task" + str(i + 1)] = acc
+                
+        for i, ece in enumerate(self.eces):
+            wrargs["ece_task" + str(i + 1)] = ece.item()
+
+        for i, fa in enumerate(self.fulleces):
+            for j, ece in enumerate(fa):
+                wrargs["ece_" + str(j + 1) + "_task" + str(i + 1)] = ece
 
         wrargs["cpu_memory_usage"] = self.cpu_res
         wrargs["gpu_memory_usage"] = self.gpu_res
@@ -428,6 +474,7 @@ def log_accs(
     args: Namespace,
     logger: Logger,
     accs,
+    eces,
     t: int,
     setting: str,
     epoch=None,
@@ -457,10 +504,21 @@ def log_accs(
         epoch=epoch,
         future=future,
     )
+    
+    mean_ece = print_mean_ece(
+        eces,
+        t + 1 if isinstance(t, (float, int)) else t,
+        setting,
+        joint=args.joint,
+        epoch=epoch,
+        future=future,
+    )
 
     if not args.disable_log:
         logger.log(mean_acc)
+        logger.log_ece(mean_ece)
         logger.log_fullacc(accs)
+        logger.log_fullece(eces)
 
     if not args.nowand:
         postfix = "" if epoch is None else f"_epoch_{epoch}"
@@ -627,3 +685,97 @@ def print_mean_accuracy(
             )
     print("\n", file=sys.stderr)
     return mean_acc
+
+def print_mean_ece(
+    eces: np.ndarray,
+    task_number: int,
+    setting: str,
+    joint=False,
+    epoch=None,
+    future=False,
+) -> None:
+    """
+    Prints the mean ece on stderr.
+
+    Args:
+        eces: ece values per task
+        task_number: task index
+        setting: the setting of the benchmark
+        joint: whether it's joint ece or not
+        epoch: the epoch number (optional)
+
+    Returns:
+        The mean ece value.
+    """
+    mean_ece = np.mean(eces, axis=1)
+
+    if joint:
+        prefix = (
+            "Joint ece" if epoch is None else f"Joint ece (epoch {epoch})"
+        )
+        if setting == "domain-il" or setting == "general-continual":
+            mean_ece, _ = mean_ece
+            out_str = "{}: \t [Domain-IL]: {} %".format(prefix, round(mean_ece, 2))
+            print(out_str, file=sys.stderr)
+            logging.info(out_str)
+            print(
+                "\tRaw ece values: Domain-IL {}".format(eces[0]), file=sys.stderr
+            )
+            logging.info("\tRaw ece values: Domain-IL {}".format(eces[0]))
+        else:
+            mean_ece_class_il, mean_ece_task_il = mean_ece
+            out_str = "{}: \t [Class-IL]: {} % \t [Task-IL]: {} %".format(
+                prefix, round(mean_ece_class_il, 2), round(mean_ece_task_il, 2)
+            )
+            print(out_str, file=sys.stderr)
+            logging.info(out_str)
+            print(
+                "\tRaw ece values: Class-IL {} | Task-IL {}".format(
+                    eces[0], eces[1]
+                ),
+                file=sys.stderr,
+            )
+            logging.info(
+                "\tRaw ece values: Class-IL {} | Task-IL {}".format(
+                    eces[0], eces[1]
+                )
+            )
+    else:
+        prefix = "ece" if epoch is None else f"ece (epoch {epoch})"
+        prefix = "Future " + prefix if future else prefix
+        if setting == "domain-il" or setting == "general-continual":
+            mean_ece, _ = mean_ece
+            out_str = "{} for {} task(s): [Domain-IL]: {} %".format(
+                prefix, task_number, round(mean_ece, 2)
+            )
+            print(out_str, file=sys.stderr)
+            logging.info(out_str)
+            print(
+                "\tRaw ece values: Domain-IL {}".format(eces[0]), file=sys.stderr
+            )
+            logging.info("\tRaw ece values: Domain-IL {}".format(eces[0]))
+        else:
+            mean_ece_class_il, mean_ece_task_il = mean_ece
+            out_str = (
+                "{} for {} task(s): \t [Class-IL]: {} % \t [Task-IL]: {} %".format(
+                    prefix,
+                    task_number,
+                    round(mean_ece_class_il, 2),
+                    round(mean_ece_task_il, 2),
+                )
+            )
+            print(out_str, file=sys.stderr)
+            logging.info(out_str)
+            print(
+                "\tRaw ece values: Class-IL {} | Task-IL {}".format(
+                    eces[0], eces[1]
+                ),
+                file=sys.stderr,
+            )
+            logging.info(
+                "\tRaw ece values: Class-IL {} | Task-IL {}".format(
+                    eces[0], eces[1]
+                )
+            )
+    print("\n", file=sys.stderr)
+    return mean_ece

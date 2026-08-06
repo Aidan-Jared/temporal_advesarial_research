@@ -1,9 +1,12 @@
 import glob
 import json
 import os
+import re
 
 import numpy as np
 from tqdm import tqdm
+
+re.sub("test", "at", "atata")
 
 
 def safe(obj):
@@ -37,6 +40,8 @@ def write_ndjson(read_path: str, write_path: str):
         "True": True,
     }
 
+    cl_type = re.search(r"[^/]+-il", read_path).group()
+
     pbar = tqdm(glob.glob(read_path, recursive=True))
 
     for file in pbar:
@@ -55,7 +60,12 @@ def write_ndjson(read_path: str, write_path: str):
                 }
                 sanitized = safe(filtered_record)
 
+                sanitized["il"] = cl_type
+
                 dataset = sanitized.get("dataset", "unknown_dataset")
+
+                if dataset == "seq-tinyimg":
+                    continue
 
                 # Cleanly inject the dataset name before the .ndjson extension
                 if write_path.endswith(".ndjson"):

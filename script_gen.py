@@ -23,15 +23,13 @@ if __name__ == "__main__":
         "seq-mnist",
         "seq-cifar100",
         "seq-cifar10",
-        "seq-tinyimg",
     ]
-    models = ["ewc_on", "gem", "agem", "der", "derpp", "xder"]
+    models = [ "gem", "agem", "der", "derpp", "xder"] #"ewc_on",
     data_backbone = {
         "perm-mnist": ["mnistmlp", "mnistmlp-pnn"],
         "seq-mnist": ["mnistmlp", "mnistmlp-pnn"],
         "seq-cifar100": ["reduced-resnet18", "resnet18-pnn"],
         "seq-cifar10": ["reduced-resnet18", "resnet18-pnn"],
-        "seq-tinyimg": ["resnet18-7x7", "resnet18-7x7-pt"],
     }
     with open("args.txt", "a") as f:
         for data in datasets:
@@ -42,7 +40,7 @@ if __name__ == "__main__":
                 else:
                     continue
                 for backbone in data_backbone[data]:
-                    for buffer in param.keys():
+                    for buffer in param:
                         output = (
                             "--seed 42 "
                             + " --runs 5 "
@@ -50,7 +48,7 @@ if __name__ == "__main__":
                             + " --dataset "
                             + data
                             + " --model "
-                            + model
+                            + model.replace("_", "-")
                             + " --backbone "
                             + backbone
                             + " --severity "

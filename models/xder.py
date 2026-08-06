@@ -14,7 +14,6 @@ from utils.augmentations import *
 from utils.batch_norm import bn_track_stats
 from utils.simclrloss import SupConLoss
 
-
 class XDer(ContinualModel):
     """Continual learning via eXtended Dark Experience Replay."""
     NAME = 'xder'
